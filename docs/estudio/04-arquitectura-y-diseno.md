@@ -2,10 +2,11 @@
 
 ## Las piezas, de principio a fin
 
-```
- texto del contrato → segmentación → análisis (LLM + heurística) → informe
- (plain text)         segment.py      analyzer.py + clauses.py       ContractReport
-                                      llm/ (cascada de proveedores)
+```mermaid
+flowchart LR
+    A[Texto del contrato<br/>plain text] --> B[Segmentación<br/>segment.py]
+    B --> C[Análisis / LLM + heurística<br/>analyzer.py + clauses.py<br/>llm/ cascada de proveedores]
+    C --> D[Informe<br/>ContractReport]
 ```
 
 Por encima: la **API HTTP** (`main.py`, FastAPI) y la **CLI** (`cli.py`, demo con

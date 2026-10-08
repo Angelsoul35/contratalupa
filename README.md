@@ -26,12 +26,11 @@ Two properties make it suitable for this job:
 
 ## How it works
 
-```
- contract text        segment              classify + risk          report
- ─────────────    ───────────────    ──────────────────────    ────────────────
- plain text   ─▶  clauses (by     ─▶  LLM cascade (JSON) with ─▶ per-clause risk +
-                  numbered/titled      offline heuristic          missing standard
-                  sections)            fallback                   clauses + overall
+```mermaid
+flowchart LR
+    A[Contract text<br/>plain text] --> B[Segment<br/>clauses by numbered/<br/>titled sections]
+    B --> C[Classify + risk<br/>LLM cascade JSON,<br/>offline heuristic fallback]
+    C --> D[Report<br/>per-clause risk + missing<br/>standard clauses + overall]
 ```
 
 1. **Segment (`segment.py`).** Splits the text into clauses by recognising

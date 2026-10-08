@@ -20,16 +20,11 @@ pieces, the data flow, and the boundaries between them.
 
 ## Data flow
 
-```
-┌──────────────┐  segment()  ┌──────────────┐  per clause  ┌──────────────────┐
-│ contract text│ ──────────▶ │ list[Clause] │ ───────────▶ │ LLM JSON verdict  │
-└──────────────┘             └──────────────┘               │  or heuristic     │
-                                                             └─────────┬─────────┘
-                                                                       ▼
-                                                        ┌──────────────────────────┐
-                                                        │ ContractReport            │
-                                                        │ findings, missing, risk   │
-                                                        └──────────────────────────┘
+```mermaid
+flowchart LR
+    A[Contract text] -->|segment| B["list[Clause]"]
+    B -->|per clause| C[LLM JSON verdict<br/>or heuristic]
+    C --> D[ContractReport<br/>findings, missing, risk]
 ```
 
 ## Two design ideas carry the project
