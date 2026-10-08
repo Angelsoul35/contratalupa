@@ -46,6 +46,33 @@ Two properties make it suitable for this job:
    (Anthropic → OpenAI → Gemini → DeepSeek → Ollama); the first to answer wins,
    and a provider with no key or a transient failure is skipped.
 
+## How the risk score and the JSON contract work
+
+**Risk heuristic.** `clauses.py` holds a weighted list of risk phrases — e.g.
+`unlimited liability` (+3), `sole discretion` (+2), `automatically renew` (+2),
+`without limitation` (+1). A clause's weight is the sum of the phrases it
+contains; `weight ≥ 3 → high`, `≥ 1 → medium`, `0 → low`, and the matched phrases
+become the rationale. This runs as the offline fallback *and* as a sanity signal
+regardless of the LLM.
+
+**Strict JSON, validated not trusted.** The LLM is asked for exactly
+`{"type", "risk", "rationale"}` with the allowed values enumerated in the prompt.
+On the way back the analyser extracts the first `{...}` block (models sometimes
+wrap JSON in prose), parses it, and **validates** each field against the
+`ClauseType` and `Risk` enums — an out-of-vocabulary `type` is coerced to the
+heuristic type, a bad `risk` to the heuristic risk, and a response with no JSON
+is treated as a provider failure that triggers the fallback. The model proposes;
+the vocabulary disposes. Every finding records its `source` (`llm` or
+`heuristic`) so a reader knows how it was produced.
+
+**Missing clauses** are a set difference: `STANDARD_CLAUSES − detected_types`.
+It surfaces absence (no limitation-of-liability, no data-protection clause), which
+is often where the real risk hides, and is treated as a prompt for human review,
+not a verdict.
+
+This is decision-support, not legal advice: it gives a fast, explainable first
+read for a lawyer to focus and trust, never an automated judgement.
+
 ## Quick start
 
 ```bash
