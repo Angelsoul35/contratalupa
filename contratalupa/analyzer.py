@@ -98,9 +98,7 @@ class ClauseAnalyzer:
     def _llm_classify(self, text: str) -> tuple[ClauseType, Risk, str]:
         if self.llm is None:
             raise LLMError("no LLM configured")
-        result = self.llm.complete(
-            _SYSTEM, _PROMPT_PREFIX + text, max_tokens=self.max_tokens
-        )
+        result = self.llm.complete(_SYSTEM, _PROMPT_PREFIX + text, max_tokens=self.max_tokens)
         match = _JSON_RE.search(result.text)
         if not match:
             raise LLMError("LLM response had no JSON object")
