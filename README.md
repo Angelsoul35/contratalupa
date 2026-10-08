@@ -8,6 +8,12 @@ fallback so it always returns an answer.
 The name is a play on *contrato* (contract) and *lupa* (magnifying glass): it
 reads a contract the way a careful reviewer would, and explains what it finds.
 
+[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-blue)](.github/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue)](pyproject.toml)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+---
+
 ## Why it matters
 
 A contract's risk lives in its clauses: an unlimited-liability clause, an
