@@ -68,6 +68,42 @@ La segmentación, el vocabulario, el analizador (camino LLM con un fake y camino
 heurístico), la cascada y su fallback, la API y la CLI. Ninguna prueba toca la
 red. Cobertura mínima en CI del 80 %.
 
+## Sobre la evaluación con datos reales (LEDGAR)
+
+**¿Cómo demuestras que el clasificador generaliza y no memoriza?**
+Lo evalúo en cláusulas reales de LEDGAR con tres vistas: validación cruzada
+estratificada de 5 particiones, una partición de prueba retenida que el modelo no
+ve, y la puntuación en entrenamiento para medir la brecha. macro-F1 de 0,906 (CV)
+y 0,908 (prueba) frente a una línea base de 0,005, con una brecha entrenamiento →
+CV de solo +0,083 y CV y prueba coincidiendo a 0,003. Brecha pequeña y vistas que
+coinciden = buen ajuste.
+
+**¿Por qué macro-F1 y no exactitud?**
+Porque con 20 clases la exactitud puede engañar: un modelo que favorece las clases
+frecuentes parece bueno sin serlo. macro-F1 promedia el F1 de cada clase por
+igual, así que castiga el mal desempeño en cualquier tipo de cláusula. Reporto
+exactitud como apoyo, no como métrica principal.
+
+**¿Qué prueba que la señal es real y no un artefacto?**
+El control de etiquetas barajadas. Permuto el vínculo texto → tipo y reentreno:
+el macro-F1 de CV se desploma de 0,906 a 0,053, el suelo aleatorio de 20 clases.
+Si siguiera alto, habría fuga o memorización. Que se desplome demuestra que el
+0,906 venía de aprender la relación real.
+
+**¿Cómo evitas la fuga de información en la evaluación?**
+El vectorizador TF-IDF y el clasificador van en un solo pipeline, y en cada
+partición el pipeline se ajusta **solo** con los datos de entrenamiento. Así el
+IDF nunca ve el vocabulario de la prueba. Si ajustara con todo, los números
+saldrían inflados.
+
+**El entrenamiento da 0,989 y la prueba 0,908. ¿No es eso sobreajuste?**
+No. Sobreajuste sería entrenamiento alto con prueba mucho más baja (brecha
+grande) e inestable. Aquí la brecha es +0,083, CV y prueba coinciden a 0,003 y la
+desviación entre particiones es ±0,007. El entrenamiento siempre es algo más alto;
+lo que importa es que la prueba lo sigue de cerca. No bajé el modelo para cerrar
+la brecha: el macro-F1 de CV es plano para `C` de 1 a 8, y elegí `C = 2,0` por
+parsimonia.
+
 ## Pregunta trampa
 
 **Si el LLM clasifica mal una cláusula presente, ¿qué pasa con "cláusulas que

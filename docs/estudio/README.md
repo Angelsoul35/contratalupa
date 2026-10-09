@@ -18,6 +18,10 @@ explica el "por qué" de cada decisión en tu idioma, para estudiar con calma.
    las piezas y qué decisiones de diseño se tomaron.
 5. **[05-preguntas-de-entrevista.md](05-preguntas-de-entrevista.md)** — preguntas
    típicas y cómo responderlas con seguridad.
+6. **[06-evaluacion-con-datos-reales.md](06-evaluacion-con-datos-reales.md)** —
+   el benchmark con datos reales (LEDGAR): sobreajuste y subajuste, macro-F1 vs
+   exactitud, validación cruzada y partición de prueba, y el control de etiquetas
+   barajadas, con un ejemplo trabajado con los números reales.
 
 ## Resumen en una frase
 
